@@ -21,28 +21,64 @@ d3.csv("colleges.csv").then(data => {
     })
 
     // 3: SET AXES SCALES
-    //Your code...
+    let xEarningScale = d3.scaleLinear()
+        .domain(d3.extent(data, d => d["earnings"]))
+        .range([0, width]);
+
+    let yDebtScale = d3.scaleLinear()
+        .domain(d3.extent(data, d => d["debt"]))
+        .range([height, 0]);
 
     // 4: PLOT POINTS
-    //Your code...
+    svgScatter.attr("class", "scatter")
+        .selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xEarningScale(d["earnings"]))
+        .attr("cy", d => yDebtScale(d["debt"]))
+        .attr("r", 5);
+
 
     // 5: AXES
     // Add x-axis
-    //Your code...
+    svgScatter.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .call(d3.axisBottom(xEarningScale));
     
     // Add y-axis
-    //Your code...
+    svgScatter.append("g")
+        .call(d3.axisLeft(yDebtScale));
     
 
     // 6: ADD LABELS
     // Add title
-    //Your code...
+    svgScatter.append("text")
+        .attr("class", "title")
+        .attr("x", width / 2)
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text("College Debt upon Graduation vs. Earnings 8 Years Later");
     
     // Add x-axis label
-    //Your code...
+    svgScatter.append("text")
+        .attr("class", "axis-label")
+        .attr("x", width / 2)
+        .attr("y", height + (margin.bottom / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text("Median Earnings ($)");
     
     // Add y-axis label
-    //Your code...
+    svgScatter.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("x", 0 - (height / 2))
+        .attr("y", 0 - (margin.left / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .text("Median Debt ($)");  
     
 
     // [optional challenge] 7: ADD TOOL-TIP
